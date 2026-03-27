@@ -3,451 +3,404 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BlackRoad Systems</title>
-<meta name="description" content="BlackRoad Systems — Fleet operations dashboard.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<title>Status — BlackRoad OS</title>
+<meta name="description" content="BlackRoad OS — Pave Tomorrow.">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<meta property="og:title" content="BlackRoad Systems"><meta property="og:url" content="https://blackroad.systems"><meta property="og:image" content="https://images.blackroad.io/brand/blackroad-og.png">
-<link rel="canonical" href="https://blackroad.systems">
-<link rel="icon" type="image/png" href="https://images.blackroad.io/brand/favicon.png">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
-:root{--g:linear-gradient(90deg,#FF6B2B,#FF2255,#CC00AA,#8844FF,#4488FF,#00D4FF);--g135:linear-gradient(135deg,#FF6B2B,#FF2255,#CC00AA,#8844FF,#4488FF,#00D4FF);--bg:#000;--border:#1a1a1a;--sub:#999;--dim:#333;--sg:'Space Grotesk',sans-serif;--jb:'JetBrains Mono',monospace}
-body{background:var(--bg);color:#f5f5f5;font-family:var(--sg);overflow-x:hidden;padding-bottom:56px}
+html{-webkit-font-smoothing:antialiased}
+:root{--g:linear-gradient(90deg,#FF6B2B,#FF2255,#CC00AA,#8844FF,#4488FF,#00D4FF);--g135:linear-gradient(135deg,#FF6B2B,#FF2255,#CC00AA,#8844FF,#4488FF,#00D4FF);--bg:#000;--white:#fff;--black:#000;--border:#1a1a1a;--sg:'Space Grotesk',sans-serif;--jb:'JetBrains Mono',monospace}
+body{overflow-x:hidden;background:var(--bg);color:var(--white);font-family:var(--sg)}
 .grad-bar{height:4px;background:var(--g)}
-.container{max-width:100%;margin:0 auto;padding:32px 16px 0}
-.section{margin-bottom:40px}
-.section-label{font-family:var(--jb);font-size:10px;font-weight:500;color:var(--sub);letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px}
-.title{font-size:24px;font-weight:700;color:#fff;margin-bottom:4px}
-.subtitle{font-size:13px;color:#aaa;margin-bottom:32px}
-.mark{width:24px;height:3px;border-radius:2px;background:var(--g);margin-bottom:16px}
-.card{border:1px solid var(--border);border-radius:10px;padding:16px;background:#0a0a0a;transition:border-color .2s,transform .15s;margin-bottom:10px;cursor:pointer}
-.card:hover{border-color:var(--dim)}.card:active{transform:scale(.985)}
-.card.no-click{cursor:default}.card.no-click:active{transform:none}
-.card-detail{display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:#aaa;line-height:1.7}
-.card.open .card-detail{display:block}
-.card-arrow{float:right;font-size:14px;color:#555;transition:transform .2s}
-.card.open .card-arrow{transform:rotate(90deg)}
-.grid-2,.grid-3,.grid-4{display:grid;gap:10px;margin-bottom:16px}
-.grid-2{grid-template-columns:1fr}.grid-3{grid-template-columns:1fr}.grid-4{grid-template-columns:repeat(2,1fr)}
-.stat-val{font-size:22px;font-weight:700;color:#fff}
-.stat-label{font-family:var(--jb);font-size:9px;color:#aaa;letter-spacing:.1em;text-transform:uppercase;margin-top:4px}
-.dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:6px}.dot-live{background:var(--g135)}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}.pulse{animation:pulse 2s infinite}
-.circle-accent{width:8px;height:8px;border-radius:50%;background:var(--g135);display:inline-block}
-.svc-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px}
-.svc-row:last-child{border-bottom:none}
-.svc-name{color:#ddd;min-width:100px;font-weight:500}
-.svc-host{font-family:var(--jb);font-size:10px;color:#888;flex:1}
-.svc-port{font-family:var(--jb);font-size:10px;color:#666}
-/* widget */
-.widget-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
-.widget{border:1px solid var(--border);border-radius:12px;padding:16px;background:#0a0a0a;cursor:grab;transition:border-color .2s,transform .15s;position:relative;min-height:90px;display:flex;flex-direction:column;user-select:none}
-.widget:hover{border-color:var(--dim)}.widget:active{cursor:grabbing;transform:scale(.97)}
-.widget.dragging{opacity:.5}.widget.drag-over{border-color:#888;background:#111}
-.widget-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;margin-bottom:10px;background:#111;border:1px solid var(--border)}
-.widget-name{font-size:12px;font-weight:600;color:#ddd;margin-bottom:2px}
-.widget-desc{font-family:var(--jb);font-size:9px;color:#888}
-.widget-link{position:absolute;inset:0;border-radius:12px;z-index:1}
-.widget-badge{position:absolute;top:8px;right:8px;font-family:var(--jb);font-size:8px;color:#666;background:#111;border:1px solid var(--border);border-radius:4px;padding:1px 5px}
-.widget-palette{display:none;border:1px solid var(--border);border-radius:12px;background:#0a0a0a;padding:16px;margin-bottom:16px}.widget-palette.open{display:block}
-.widget-palette-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}
-.widget-palette-item{border:1px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;font-size:11px;color:#aaa}.widget-palette-item:hover{border-color:#555;color:#ddd}
-.widget-edit-mode .widget{animation:wiggle .3s ease-in-out infinite alternate}
-.widget-edit-mode .widget:nth-child(2n){animation-delay:.15s}
-@keyframes wiggle{0%{transform:rotate(-.5deg)}100%{transform:rotate(.5deg)}}
-.widget-remove{display:none;position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:#333;border:1px solid #555;color:#aaa;font-size:11px;cursor:pointer;z-index:2;align-items:center;justify-content:center;line-height:1}
-.widget-edit-mode .widget-remove{display:flex}
-@media(min-width:600px){.container{padding:40px 24px 0;max-width:880px}.grid-3{grid-template-columns:repeat(3,1fr)}.grid-4{grid-template-columns:repeat(4,1fr)}.widget-grid{grid-template-columns:repeat(3,1fr)}.widget-palette-grid{grid-template-columns:repeat(3,1fr)}.title{font-size:28px}}
-@media(min-width:900px){.container{padding:48px 24px 0}.grid-2{grid-template-columns:repeat(2,1fr)}.widget-grid{grid-template-columns:repeat(4,1fr)}.widget-palette-grid{grid-template-columns:repeat(4,1fr)}.title{font-size:32px}}
-@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+nav{display:flex;align-items:center;justify-content:space-between;padding:16px 48px;border-bottom:1px solid var(--border)}
+.nav-logo{font-weight:700;font-size:20px;color:var(--white);display:flex;align-items:center;gap:10px}
+.nav-mark{width:28px;height:4px;border-radius:2px;background:var(--g)}
+.nav-links{display:flex;gap:24px}
+.nav-links a{font-size:13px;font-weight:500;color:var(--white);opacity:.4;text-decoration:none;transition:opacity .15s}
+.nav-links a:hover{opacity:.8}
+.container{max-width:800px;margin:0 auto;padding:0 24px}
 
-/* ═══ ENHANCEMENTS ═══ */
-.fade-in{animation:pageIn .4s ease}@keyframes pageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.btt{position:fixed;bottom:16px;right:16px;width:36px;height:36px;border-radius:50%;background:#0a0a0a;border:1px solid #1a1a1a;color:#888;font-size:14px;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:99;transition:border-color .2s}.btt:hover{border-color:#555}
-.eco-bar{position:fixed;bottom:0;left:0;right:0;background:#0a0a0a;border-top:1px solid #1a1a1a;padding:6px 0;z-index:98;overflow-x:auto}.eco-bar-inner{display:flex;gap:14px;justify-content:center;padding:0 16px;white-space:nowrap}.eco-bar a{font-family:var(--jb,'JetBrains Mono',monospace);font-size:.55rem;color:#555;text-decoration:none;transition:color .15s}.eco-bar a:hover{color:#aaa}
-.toolbar{display:flex;gap:8px;margin-bottom:16px}.tool-btn{font-family:var(--jb,'JetBrains Mono',monospace);font-size:9px;color:#666;background:#0a0a0a;border:1px solid #1a1a1a;border-radius:6px;padding:4px 10px;cursor:pointer;transition:all .15s}.tool-btn:hover{border-color:#555;color:#aaa}
+.status-banner{margin:48px 0 32px;padding:20px 24px;border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;gap:12px}
+.status-indicator{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.status-indicator.operational{background:var(--g135);box-shadow:0 0 12px rgba(136,68,255,.3)}
+.status-indicator.degraded{background:var(--g135);opacity:.5}
+.status-indicator.down{background:none;border:2px solid var(--white);opacity:.3;width:10px;height:10px}
+.status-text{font-size:16px;font-weight:600;color:var(--white)}
+.status-updated{font-family:var(--jb);font-size:11px;color:var(--white);opacity:.3;margin-left:auto}
 
-/* ═══ INTERACTIVE ═══ */
-.read-prog{position:fixed;top:0;left:0;height:2px;background:var(--g);z-index:999;transition:width .1s;width:0}
-.page-search{position:fixed;top:12px;right:16px;z-index:999;display:none}
-.page-search input{padding:8px 12px;background:#111;border:1px solid #333;border-radius:8px;color:#ddd;font-family:var(--sg);font-size:12px;width:200px;outline:none}
-.page-search input:focus{border-color:#555}
-.page-search.open{display:block}
-.read-time{font-family:var(--jb);font-size:9px;color:#555;margin-bottom:16px}
-.kbd-help{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#111;border:1px solid #333;border-radius:12px;padding:24px;z-index:1000;display:none;min-width:280px}
-.kbd-help.open{display:block}
-.kbd-help h3{font-size:14px;color:#ddd;margin-bottom:12px}
-.kbd-row{display:flex;justify-content:space-between;padding:6px 0;font-size:12px;color:#aaa;border-bottom:1px solid #1a1a1a}
-.kbd-row:last-child{border-bottom:none}
-.kbd-key{font-family:var(--jb);background:#0a0a0a;border:1px solid #333;border-radius:4px;padding:2px 8px;font-size:10px;color:#ddd}
-.kbd-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999;display:none}
-.kbd-overlay.open{display:block}
-mark.hl{background:rgba(136,68,255,.3);color:#fff;border-radius:2px;padding:0 2px}
-@media print{.eco-bar,.btt,.grad-bar,.page-search,.read-prog,.kbd-help,.kbd-overlay{display:none!important}body{background:#fff;color:#000}.card{border-color:#ccc;background:#fff}.cd{display:block!important;color:#333}.ch{color:#000}.sv{color:#000}.lb{color:#666}.tt{color:#000}.st{color:#666}}
+.service-group{margin-bottom:32px}
+.service-group-title{font-family:var(--jb);font-size:10px;color:var(--white);opacity:.3;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+.service{display:flex;align-items:center;padding:14px 0;border-bottom:1px solid var(--border)}
+.service:first-child{border-top:1px solid var(--border)}
+.service-name{font-size:14px;font-weight:500;color:var(--white);flex:1}
+.service-meta{font-family:var(--jb);font-size:11px;color:var(--white);opacity:.3;margin-right:16px}
+.service-status{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--white);opacity:.6}
+.service-dot{width:6px;height:6px;border-radius:50%}
+.service-dot.up{background:var(--g135)}
+.service-dot.degraded{background:var(--g135);opacity:.5}
+.service-dot.down{background:none;border:1px solid var(--white);opacity:.3;width:5px;height:5px}
+
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:32px 0}
+.stat-card{border:1px solid var(--border);border-radius:8px;padding:16px}
+.stat-label{font-family:var(--jb);font-size:10px;opacity:.3;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.stat-value{font-size:24px;font-weight:700}
+.stat-sub{font-family:var(--jb);font-size:11px;opacity:.3;margin-top:2px}
+
+.uptime-section{margin:48px 0}
+.uptime-section h2{font-size:18px;font-weight:600;color:var(--white);margin-bottom:24px}
+.uptime-row{margin-bottom:20px}
+.uptime-label{display:flex;justify-content:space-between;margin-bottom:6px}
+.uptime-name{font-size:13px;font-weight:500;color:var(--white)}
+.uptime-pct{font-family:var(--jb);font-size:12px;color:var(--white);opacity:.4}
+.uptime-bar{display:flex;gap:2px;height:28px}
+.uptime-day{flex:1;border-radius:2px;transition:opacity .15s}
+.uptime-day:hover{opacity:.8}
+.uptime-day.good{background:var(--g135)}
+.uptime-day.warn{background:var(--g135);opacity:.4}
+.uptime-day.bad{background:var(--white);opacity:.15}
+.uptime-day.none{background:var(--border)}
+.uptime-legend{display:flex;justify-content:space-between;margin-top:4px}
+.uptime-legend span{font-family:var(--jb);font-size:10px;color:var(--white);opacity:.2}
+
+.incidents{margin:48px 0 80px}
+.incidents h2{font-size:18px;font-weight:600;color:var(--white);margin-bottom:24px}
+.incident{border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:12px}
+.incident-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.incident-title{font-size:14px;font-weight:600;color:var(--white)}
+.incident-date{font-family:var(--jb);font-size:11px;color:var(--white);opacity:.3}
+.incident-body{overflow-x:hidden;font-size:13px;color:var(--white);opacity:.4;line-height:1.7}
+.incident-tag{display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border:1px solid var(--border);border-radius:3px;font-size:10px;font-weight:600;color:var(--white);opacity:.5;margin-top:8px}
+.incident-tag::before{content:'';width:6px;height:6px;border-radius:50%}
+.incident-tag.resolved::before{background:var(--g135)}
+.incident-tag.investigating::before{background:var(--g135);opacity:.5}
+.no-incidents{text-align:center;padding:32px;opacity:.3;font-size:13px}
+
+footer{border-top:1px solid var(--border);padding:32px 48px;text-align:center;font-size:12px;color:var(--white);opacity:.3}
+footer a{color:var(--white);opacity:1;text-decoration:none}
+.grad-bar-bottom{height:4px;background:var(--g)}
+
+@media(max-width:768px){nav{padding:14px 20px}.container{padding:0 20px}.stats-row{grid-template-columns:repeat(2,1fr)}}
+
+/* ═══ RESPONSIVE — fit to screen ═══ */
+@media(max-max-width:1024px;width:100%){
+  .metrics-strip{grid-template-columns:repeat(3,1fr)}
+  .org-grid,.grid-4,.tier-grid,.cap-grid,.stat-grid,.shield-grid,.surface-grid,.stats-row{grid-template-columns:repeat(2,1fr)}
+  .node-grid{grid-template-columns:repeat(3,1fr)}
+  .product-grid,.features-grid,.focus-grid,.gallery,.team-grid,.pricing{grid-template-columns:repeat(2,1fr)}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .cloud-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:768px){
+  nav{padding:14px 20px;flex-wrap:wrap;gap:12px}
+  .nav-links{display:none}
+  .hero{padding:80px 20px 60px}
+  .hero h1{font-size:36px}
+  .hero-cta{flex-direction:column;align-items:center}
+  .section,.section-wide{padding:48px 20px}
+  .metrics-strip{grid-template-columns:repeat(2,1fr)}
+  .product-featured{grid-template-columns:1fr}
+  .product-grid,.features-grid,.focus-grid,.gallery,.team-grid,.pricing,.cap-grid,.tier-grid,.shield-grid{grid-template-columns:1fr}
+  .org-grid,.grid-4,.stat-grid,.stats-row,.surface-grid{grid-template-columns:1fr}
+  .node-grid{grid-template-columns:1fr 1fr}
+  .cloud-grid{grid-template-columns:1fr}
+  footer{padding:32px 20px}
+  .footer-grid{grid-template-columns:1fr}
+  .footer-bottom{flex-direction:column;gap:12px;text-align:center}
+  .topnav{padding:10px 16px}
+  .topnav-links{gap:8px;flex-wrap:wrap}
+  .topnav-links a{font-size:11px}
+}
 </style>
+<meta name="keywords" content="BlackRoad status, service health, uptime, monitoring">
+<meta property="og:type" content="website">
+<meta property="og:title" content="BlackRoad Status — Service Health Dashboard">
+<meta property="og:description" content="Real-time status of all BlackRoad OS services: Workers, Pi nodes, AI inference, NATS messaging, and fleet health.">
+<meta property="og:url" content="https://status.blackroad.io">
+<meta property="og:image" content="https://images.blackroad.io/brand/blackroad-og.png">
+<meta property="og:site_name" content="BlackRoad OS">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="BlackRoad Status — Service Health Dashboard">
+<meta name="twitter:description" content="Real-time status of all BlackRoad OS services: Workers, Pi nodes, AI inference, NATS messaging, and fleet health.">
+<meta name="twitter:image" content="https://images.blackroad.io/brand/blackroad-og.png">
+<link rel="canonical" href="https://status.blackroad.io">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "BlackRoad Status — Service Health Dashboard",
+  "description": "Real-time status of all BlackRoad OS services: Workers, Pi nodes, AI inference, NATS messaging, and fleet health.",
+  "url": "https://status.blackroad.io",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Linux, macOS",
+  "author": {
+    "@type": "Organization",
+    "name": "BlackRoad OS, Inc.",
+    "url": "https://blackroad.io",
+    "founder": {
+      "@type": "Person",
+      "name": "Alexa Louise Amundson"
+    }
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "5.00",
+    "priceCurrency": "USD"
+  }
+}
+</script>
+<link rel="icon" type="image/png" href="https://images.blackroad.io/brand/favicon.png">
+<link rel="apple-touch-icon" href="https://images.blackroad.io/brand/apple-touch-icon.png">
 </head>
 <body>
 <div class="grad-bar"></div>
+<nav>
+  <div class="nav-logo"><div class="nav-mark"></div> BlackRoad Status</div>
+  <div class="nav-links">
+    <a href="https://blackroad.io">Home</a>
+    <a href="https://blackroad-dashboard.pages.dev">Dashboard</a>
+    <a href="https://blackroad-docs-hub.pages.dev">Docs</a>
+  </div>
+</nav>
+
 <div class="container">
-
-  <div class="section">
-    <div class="mark"></div>
-    <div class="title">BlackRoad Systems</div>
-    <div class="subtitle">Fleet operations dashboard</div>
+  <div class="status-banner" id="banner">
+    <div class="status-indicator" id="banner-dot"></div>
+    <span class="status-text" id="banner-text">Checking systems...</span>
+    <span class="status-updated" id="banner-updated">connecting</span>
   </div>
 
-  <div class="section">
-    <div class="section-label">Fleet Overview</div>
-    <div class="grid-4">
-      <div class="card" onclick="toggle(this)"><span class="card-arrow">›</span><div class="stat-val">7</div><div class="stat-label">Nodes</div><div class="card-detail">5 Pi 5 boards + 2 DO droplets. WireGuard mesh. 12/12 SSH links.</div></div>
-      <div class="card" onclick="toggle(this)"><span class="card-arrow">›</span><div class="stat-val">52</div><div class="stat-label">TOPS</div><div class="card-detail">2x Hailo-8 accelerators (26 TOPS each). Cecilia + Octavia.</div></div>
-      <div class="card" onclick="toggle(this)"><span class="card-arrow">›</span><div class="stat-val">16+</div><div class="stat-label">AI Models</div><div class="card-detail">Ollama on 4 nodes. llama3, mistral, codellama, phi, gemma, nomic-embed-text, and more.</div></div>
-      <div class="card" onclick="toggle(this)"><span class="card-arrow">›</span><div class="stat-val">151</div><div class="stat-label">TLS Domains</div><div class="card-detail">Caddy on Gematria auto-provisions Let's Encrypt certs for 151 domains.</div></div>
+  <div class="stats-row" id="stats-row">
+    <div class="stat-card"><div class="stat-label">Nodes Online</div><div class="stat-value" id="s-online">-</div><div class="stat-sub" id="s-online-sub">of 5</div></div>
+    <div class="stat-card"><div class="stat-label">AI Models</div><div class="stat-value" id="s-models">-</div><div class="stat-sub">fleet total</div></div>
+    <div class="stat-card"><div class="stat-label">Containers</div><div class="stat-value" id="s-containers">-</div><div class="stat-sub">running</div></div>
+    <div class="stat-card"><div class="stat-label">Fleet Temp</div><div class="stat-value" id="s-temp">-</div><div class="stat-sub" id="s-temp-sub">average</div></div>
+  </div>
+
+  <div class="service-group">
+    <div class="service-group-title">Edge Nodes</div>
+    <div id="node-services">
+      <div class="service"><span class="service-name">Loading...</span></div>
     </div>
   </div>
 
-  <!-- Per-node -->
-  <div class="section">
-    <div class="section-label">Nodes</div>
-    <div id="nodes"></div>
-  </div>
-
-  <!-- Services -->
-  <div class="section">
-    <div class="section-label">Service Registry</div>
-    <div class="card no-click" id="services"></div>
-  </div>
-
-  <!-- Widget Grid -->
-  <div class="section">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <div class="section-label" style="margin-bottom:0">Apps & Tools</div>
-      <button onclick="toggleEditMode()" style="background:none;border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-family:var(--jb);font-size:9px;color:#888;cursor:pointer" id="edit-btn">Edit</button>
+  <div class="service-group">
+    <div class="service-group-title">Services</div>
+    <div id="svc-services">
+      <div class="service"><span class="service-name">Loading...</span></div>
     </div>
-    <div class="widget-palette" id="widget-palette"><div style="font-size:12px;color:#aaa;margin-bottom:4px">Add a widget</div><div class="widget-palette-grid" id="palette-grid"></div></div>
-    <div class="widget-grid" id="widget-grid"></div>
   </div>
 
-  <div class="section" style="text-align:center">
-    <span style="font-size:11px;color:#aaa"><span class="circle-accent pulse"></span>&nbsp; Fleet uptime: <span id="uptime">calculating...</span></span>
+  <div class="uptime-section">
+    <h2>Node health (current)</h2>
+    <div id="health-bars"></div>
+  </div>
+
+  <div class="incidents">
+    <h2>Active issues</h2>
+    <div id="incidents-list"></div>
   </div>
 </div>
-<div class="grad-bar" style="margin-top:24px"></div>
+
+<footer>&copy; 2026 <a href="https://blackroad.io">BlackRoad OS, Inc.</a></footer>
+<div class="grad-bar-bottom"></div>
 
 <script>
-function toggle(el){el.classList.toggle('open');}
+const API = 'https://fleet-api.amundsonalexa.workers.dev/fleet';
+const NODES = ['alice','cecilia','octavia','aria','lucidia'];
+const ROLES = {alice:'Gateway',cecilia:'AI / TTS',octavia:'Storage / Git',aria:'Orchestration',lucidia:'APIs / DNS'};
 
-var nodes=[
-  {name:'Alice',ip:'192.168.4.49',services:['Pi-hole DNS','PostgreSQL','Qdrant','Redis','nginx (37 sites)','WireGuard']},
-  {name:'Cecilia',ip:'192.168.4.96',services:['Ollama (16 models)','MinIO (4 buckets)','Hailo-8 (26 TOPS)','PostgreSQL','InfluxDB']},
-  {name:'Octavia',ip:'192.168.4.101',services:['Gitea (:3100)','15 Workers (:9001-9015)','NATS','Docker Swarm','PaaS (:3500)','Hailo-8 (26 TOPS)']},
-  {name:'Aria',ip:'192.168.4.98',services:['Headscale','Cloudflared','nginx','19 services']},
-  {name:'Lucidia',ip:'192.168.4.38',services:['PowerDNS','GitHub Runners','Ollama','nginx (334 apps)','Tor hidden service']},
-  {name:'Gematria',ip:'DO nyc3',services:['Caddy (151 domains)','PowerDNS ns1','Ollama (6 models)']},
-  {name:'Anastasia',ip:'DO nyc1',services:['General compute','Edge caching']}
-];
+function fmtBytes(b){if(!b)return'—';if(b>1e9)return(b/1e9).toFixed(1)+'G';if(b>1e6)return(b/1e6).toFixed(0)+'M';return b+'B'}
 
-document.getElementById('nodes').innerHTML=nodes.map(function(n){
-  return '<div class="card" onclick="toggle(this)"><span class="card-arrow">›</span>'+
-    '<div style="display:flex;align-items:center;gap:8px"><span class="dot dot-live pulse"></span><span style="font-size:14px;font-weight:600;color:#ddd">'+n.name+'</span><span style="font-family:var(--jb);font-size:10px;color:#666">'+n.ip+'</span></div>'+
-    '<div style="font-family:var(--jb);font-size:10px;color:#888;margin-top:4px">'+n.services.length+' services</div>'+
-    '<div class="card-detail">'+n.services.map(function(s){return '<div class="svc-row"><span class="dot dot-live"></span><span style="color:#ccc">'+s+'</span></div>';}).join('')+'</div></div>';
-}).join('');
+function render(data){
+  if(!data||!data.nodes) return;
+  const nodes = data.nodes;
+  const online = NODES.filter(n=>nodes[n]?.status==='online');
+  const down = NODES.filter(n=>nodes[n]?.status!=='online');
+  const throttled = NODES.filter(n=>nodes[n]?.status==='online'&&nodes[n]?.throttle&&nodes[n].throttle!=='0x0');
 
-var services=[
-  {name:'Gitea',host:'Octavia',port:':3100',desc:'Self-hosted Git — 239 repos'},
-  {name:'Ollama',host:'Cecilia, Lucidia, Gematria, Octavia',port:':11434',desc:'Local AI inference'},
-  {name:'MinIO',host:'Cecilia',port:':9000',desc:'S3-compatible object storage'},
-  {name:'PowerDNS',host:'Lucidia, Gematria',port:':53',desc:'Authoritative DNS'},
-  {name:'Caddy',host:'Gematria',port:':443',desc:'TLS reverse proxy — 151 domains'},
-  {name:'Redis',host:'Alice',port:':6379',desc:'Cache + sessions'},
-  {name:'PostgreSQL',host:'Alice, Cecilia, Octavia',port:':5432',desc:'Primary database'},
-  {name:'NATS',host:'Octavia',port:':4222',desc:'Pub/sub messaging'},
-  {name:'Qdrant',host:'Alice',port:':6333',desc:'Vector store for RAG'},
-  {name:'Pi-hole',host:'Alice',port:':80',desc:'DNS sinkhole'},
-  {name:'Headscale',host:'Aria',port:':8080',desc:'WireGuard coordination'},
-  {name:'InfluxDB',host:'Cecilia',port:':8086',desc:'Time-series metrics'},
-  {name:'Docker',host:'Octavia',port:'—',desc:'Swarm orchestration'},
-  {name:'Tor',host:'Alice, Octavia, Lucidia',port:'—',desc:'Hidden services'},
-];
+  // Timestamp
+  const ts = new Date(data.timestamp);
+  const ago = Math.round((Date.now()-ts.getTime())/60000);
+  document.getElementById('banner-updated').textContent = 'Updated '+(ago<1?'just now':ago+'m ago');
 
-document.getElementById('services').innerHTML=services.map(function(s){
-  return '<div class="svc-row"><span class="dot dot-live"></span><span class="svc-name">'+s.name+'</span><span class="svc-host">'+s.host+'</span><span class="svc-port">'+s.port+'</span></div>';
-}).join('');
+  // Banner status
+  const dot = document.getElementById('banner-dot');
+  const txt = document.getElementById('banner-text');
+  if(down.length===0&&throttled.length===0){
+    dot.className='status-indicator operational';
+    txt.textContent='All systems operational';
+  } else if(down.length===NODES.length){
+    dot.className='status-indicator down';
+    txt.textContent='Major outage';
+  } else if(down.length>0){
+    dot.className='status-indicator degraded';
+    txt.textContent=down.length+' node'+(down.length>1?'s':'')+' down — partial outage';
+  } else {
+    dot.className='status-indicator degraded';
+    txt.textContent=throttled.length+' node'+(throttled.length>1?'s':'')+' throttled';
+  }
 
-// Widget system (same as all pages)
-var WIDGET_CATALOG=[{id:'chat',name:'Chat',desc:'RoundTrip',icon:'💬',href:'https://chat.blackroad.io',badge:'Live'},{id:'search',name:'Search',desc:'Search all',icon:'🔍',href:'https://search.blackroad.io',badge:'Live'},{id:'pay',name:'Pay',desc:'Checkout',icon:'💳',href:'https://pay.blackroad.io'},{id:'status',name:'Status',desc:'Fleet health',icon:'📡',href:'https://status.blackroad.io'},{id:'github',name:'GitHub',desc:'Source',icon:'⚡',href:'https://github.com/BlackRoad-OS-Inc'},{id:'ai',name:'AI',desc:'Playground',icon:'🧠',href:'https://blackroadai.com'},{id:'network',name:'Network',desc:'Mesh',icon:'🌐',href:'https://blackroad.network'},{id:'systems',name:'Systems',desc:'Fleet',icon:'🖥',href:'https://blackroad.systems'},{id:'identity',name:'Identity',desc:'Profile',icon:'👤',href:'https://blackroad.me'},{id:'company',name:'Company',desc:'Corporate',icon:'🏛',href:'https://blackroad.company'},{id:'quantum',name:'Quantum',desc:'QI',icon:'⚛',href:'https://blackroadquantum.com'},{id:'lucidia',name:'Lucidia',desc:'Companion',icon:'✧',href:'https://lucidia.earth'},{id:'docs',name:'Docs',desc:'Docs hub',icon:'📄',href:'https://docs.blackroad.io'},{id:'brand',name:'Brand',desc:'Design',icon:'◼',href:'https://brand.blackroad.io'},{id:'hq',name:'HQ',desc:'Pixel office',icon:'🏢',href:'https://hq.blackroad.io'}];
-var STORAGE_KEY='br-widgets-systems';
-var DEFAULT_WIDGETS=['status','network','systems','github','chat','search','ai','company'];
-function getActiveWidgets(){try{var s=localStorage.getItem(STORAGE_KEY);if(s)return JSON.parse(s);}catch(e){}return DEFAULT_WIDGETS.slice();}
-function saveActiveWidgets(ids){localStorage.setItem(STORAGE_KEY,JSON.stringify(ids));}
-var editMode=false;
-function toggleEditMode(){editMode=!editMode;document.getElementById('edit-btn').textContent=editMode?'Done':'Edit';document.getElementById('widget-palette').classList.toggle('open',editMode);document.getElementById('widget-grid').classList.toggle('widget-edit-mode',editMode);renderWidgets();renderPalette();}
-function renderWidgets(){var ids=getActiveWidgets();document.getElementById('widget-grid').innerHTML=ids.map(function(id,i){var w=WIDGET_CATALOG.find(function(x){return x.id===id});if(!w)return '';return '<div class="widget" draggable="true" data-id="'+w.id+'" data-index="'+i+'" ondragstart="wDragStart(event)" ondragover="wDragOver(event)" ondrop="wDrop(event)" ondragend="wDragEnd(event)">'+(editMode?'<div class="widget-remove" onclick="removeWidget(\''+w.id+'\')">×</div>':'')+'<div class="widget-icon">'+w.icon+'</div><div class="widget-name">'+w.name+'</div><div class="widget-desc">'+w.desc+'</div>'+(w.badge?'<div class="widget-badge">'+w.badge+'</div>':'')+(!editMode?'<a href="'+w.href+'" target="_blank" class="widget-link"></a>':'')+'</div>';}).join('');}
-function renderPalette(){var ids=getActiveWidgets();var avail=WIDGET_CATALOG.filter(function(w){return ids.indexOf(w.id)===-1});var pg=document.getElementById('palette-grid');if(!avail.length){pg.innerHTML='<div style="font-size:11px;color:#555;padding:8px">All added</div>';return;}pg.innerHTML=avail.map(function(w){return '<div class="widget-palette-item" onclick="addWidget(\''+w.id+'\')">'+w.icon+' '+w.name+'</div>';}).join('');}
-function addWidget(id){var ids=getActiveWidgets();if(ids.indexOf(id)===-1){ids.push(id);saveActiveWidgets(ids);}renderWidgets();renderPalette();}
-function removeWidget(id){var ids=getActiveWidgets().filter(function(x){return x!==id});saveActiveWidgets(ids);renderWidgets();renderPalette();}
-var dragIdx=null;
-function wDragStart(e){dragIdx=+e.target.closest('.widget').dataset.index;e.target.closest('.widget').classList.add('dragging');}
-function wDragOver(e){e.preventDefault();e.target.closest('.widget')?.classList.add('drag-over');}
-function wDrop(e){e.preventDefault();document.querySelectorAll('.widget').forEach(function(x){x.classList.remove('drag-over')});var t=e.target.closest('.widget');if(!t)return;var ti=+t.dataset.index;if(dragIdx===null||dragIdx===ti)return;var ids=getActiveWidgets();var m=ids.splice(dragIdx,1)[0];ids.splice(ti,0,m);saveActiveWidgets(ids);renderWidgets();}
-function wDragEnd(e){dragIdx=null;document.querySelectorAll('.widget').forEach(function(x){x.classList.remove('dragging','drag-over')});}
-renderWidgets();
+  // Stats
+  const totalModels = NODES.reduce((s,n)=>s+(nodes[n]?.models||0),0);
+  const totalContainers = NODES.reduce((s,n)=>s+(nodes[n]?.containers||0),0);
+  const temps = NODES.filter(n=>nodes[n]?.temp).map(n=>nodes[n].temp);
+  const avgTemp = temps.length?(temps.reduce((a,b)=>a+b,0)/temps.length).toFixed(1):'—';
 
-var founded=new Date('2025-11-17T00:00:00Z');
-function uptime(){var diff=Date.now()-founded;var d=Math.floor(diff/86400000);var h=Math.floor((diff%86400000)/3600000);var m=Math.floor((diff%3600000)/60000);document.getElementById('uptime').textContent=d+'d '+h+'h '+m+'m';}
-uptime();setInterval(uptime,60000);
-</script>
+  document.getElementById('s-online').textContent=online.length;
+  document.getElementById('s-online-sub').textContent='of '+NODES.length;
+  document.getElementById('s-models').textContent=totalModels;
+  document.getElementById('s-containers').textContent=totalContainers;
+  document.getElementById('s-temp').textContent=avgTemp+'°C';
 
-<button class="btt" id="btt" onclick="scrollTo({top:0,behavior:'smooth'})">↑</button>
-<div class="eco-bar"><div class="eco-bar-inner">
-<a href="https://blackroad.io">Home</a>
-<a href="https://search.blackroad.io">Search</a>
-<a href="https://chat.blackroad.io">Chat</a>
-<a href="https://blackroadai.com">AI</a>
-<a href="https://blackroad.network">Network</a>
-<a href="https://blackroad.systems">Systems</a>
-<a href="https://blackroad.company">Company</a>
-<a href="https://blackroad.me">Identity</a>
-<a href="https://pay.blackroad.io">Pay</a>
-<a href="https://status.blackroad.io">Status</a>
-<a href="https://faq.blackroad.io">FAQ</a>
-<a href="https://github.com/BlackRoad-OS-Inc">GitHub</a>
-</div></div>
-<div style="height:32px"></div>
-<script>
-window.addEventListener('scroll',function(){document.getElementById('btt').style.display=window.scrollY>300?'flex':'none'});
-document.querySelector('.ct,.container')?.classList.add('fade-in');
-</script>
+  // Node services
+  let nodeHTML='';
+  NODES.forEach(name=>{
+    const n=nodes[name]||{status:'down'};
+    const up=n.status==='online';
+    const warn=up&&n.throttle&&n.throttle!=='0x0';
+    const dotClass=up?(warn?'degraded':'up'):'down';
+    const statusText=up?(warn?'Throttled':'Online'):'Down';
+    const meta=[];
+    if(up&&n.temp)meta.push(n.temp+'°C');
+    if(up&&n.load!==undefined)meta.push('load '+n.load);
+    if(up&&n.ram_used&&n.ram_total)meta.push('RAM '+Math.round(n.ram_used/n.ram_total*100)+'%');
+    nodeHTML+='<div class="service">'
+      +'<span class="service-name" style="text-transform:capitalize">'+name+' <span style="opacity:.3;font-size:12px;font-weight:400">('+ROLES[name]+')</span></span>'
+      +(meta.length?'<span class="service-meta">'+meta.join(' · ')+'</span>':'')
+      +'<span class="service-status"><span class="service-dot '+dotClass+'"></span>'+statusText+'</span>'
+      +'</div>';
+  });
+  document.getElementById('node-services').innerHTML=nodeHTML;
 
-<div class="read-prog" id="rp"></div>
-<div class="page-search" id="ps"><input placeholder="Search this page..." oninput="pageSearch(this.value)" id="psi"></div>
-<div class="kbd-overlay" id="ko" onclick="toggleHelp()"></div>
-<div class="kbd-help" id="kh">
-<h3>Keyboard Shortcuts</h3>
-<div class="kbd-row"><span>Show shortcuts</span><span class="kbd-key">?</span></div>
-<div class="kbd-row"><span>Search page</span><span class="kbd-key">/</span></div>
-<div class="kbd-row"><span>Expand all</span><span class="kbd-key">e</span></div>
-<div class="kbd-row"><span>Collapse all</span><span class="kbd-key">c</span></div>
-<div class="kbd-row"><span>Back to top</span><span class="kbd-key">t</span></div>
-<div class="kbd-row"><span>Copy URL</span><span class="kbd-key">s</span></div>
-<div class="kbd-row"><span>Close</span><span class="kbd-key">Esc</span></div>
-</div>
-<script>
-// Reading progress
-window.addEventListener('scroll',function(){var h=document.documentElement;var p=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100;document.getElementById('rp').style.width=p+'%';});
-// Read time estimate
-(function(){var t=document.body.innerText;var w=t.split(/\s+/).length;var m=Math.ceil(w/200);var el=document.querySelector('.st');if(el)el.insertAdjacentHTML('afterend','<div class="read-time">'+m+' min read · '+w+' words</div>');})();
-// Page search
-var origHTML='';
-function pageSearch(q){
-  if(!origHTML)origHTML=document.querySelector('.ct,.container')?.innerHTML||'';
-  var el=document.querySelector('.ct,.container');
-  if(!el)return;
-  if(!q){el.innerHTML=origHTML;origHTML='';return;}
-  el.innerHTML=origHTML;
-  var re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\]/g,'\$&')+')','gi');
-  var walk=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);
-  var nodes=[];while(walk.nextNode())nodes.push(walk.currentNode);
-  nodes.forEach(function(n){if(n.parentElement.tagName==='SCRIPT'||n.parentElement.tagName==='STYLE')return;if(re.test(n.textContent)){var span=document.createElement('span');span.innerHTML=n.textContent.replace(re,'<mark class="hl">$1</mark>');n.parentNode.replaceChild(span,n);}});
+  // Derived service statuses
+  const svcs=[
+    {name:'Cloudflare Tunnels',check:()=>online.length>0},
+    {name:'WireGuard Mesh',check:()=>online.length>=2},
+    {name:'Ollama Inference',check:()=>NODES.some(n=>nodes[n]?.ollama==='active')},
+    {name:'Gitea',check:()=>nodes.octavia?.status==='online'&&nodes.octavia?.containers>0},
+    {name:'Pi-hole DNS',check:()=>nodes.alice?.status==='online'},
+    {name:'Docker Swarm',check:()=>nodes.octavia?.status==='online'},
+    {name:'CECE API',check:()=>nodes.cecilia?.status==='online'},
+    {name:'Lucidia API',check:()=>nodes.lucidia?.status==='online'},
+  ];
+  let svcHTML='';
+  svcs.forEach(s=>{
+    const ok=s.check();
+    svcHTML+='<div class="service">'
+      +'<span class="service-name">'+s.name+'</span>'
+      +'<span class="service-status"><span class="service-dot '+(ok?'up':'down')+'"></span>'+(ok?'Operational':'Down')+'</span>'
+      +'</div>';
+  });
+  document.getElementById('svc-services').innerHTML=svcHTML;
+
+  // Health bars (RAM/Disk/Temp visualization per node)
+  let healthHTML='';
+  NODES.forEach(name=>{
+    const n=nodes[name]||{};
+    if(n.status!=='online') {
+      healthHTML+='<div class="uptime-row">'
+        +'<div class="uptime-label"><span class="uptime-name" style="text-transform:capitalize">'+name+'</span><span class="uptime-pct">Offline</span></div>'
+        +'<div class="uptime-bar">';
+      for(let i=0;i<30;i++) healthHTML+='<div class="uptime-day bad"></div>';
+      healthHTML+='</div><div class="uptime-legend"><span>RAM</span><span>Disk</span><span>Temp</span></div></div>';
+      return;
+    }
+    const ramPct=n.ram_used&&n.ram_total?Math.round(n.ram_used/n.ram_total*100):0;
+    const diskPct=n.disk_pct||0;
+    const tempPct=n.temp?Math.round(n.temp/85*100):0;
+
+    function barClass(pct){return pct>80?'warn':pct>95?'bad':'good'}
+
+    healthHTML+='<div class="uptime-row">'
+      +'<div class="uptime-label"><span class="uptime-name" style="text-transform:capitalize">'+name+'</span>'
+      +'<span class="uptime-pct">RAM '+ramPct+'% · Disk '+diskPct+'% · '+n.temp+'°C</span></div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">'
+      +'<div style="height:8px;border-radius:4px;background:var(--border);overflow:hidden"><div style="height:100%;width:'+ramPct+'%;border-radius:4px;background:var(--g)"></div></div>'
+      +'<div style="height:8px;border-radius:4px;background:var(--border);overflow:hidden"><div style="height:100%;width:'+diskPct+'%;border-radius:4px;background:var(--g)"></div></div>'
+      +'<div style="height:8px;border-radius:4px;background:var(--border);overflow:hidden"><div style="height:100%;width:'+tempPct+'%;border-radius:4px;background:var(--g)"></div></div>'
+      +'</div>'
+      +'<div class="uptime-legend"><span>RAM</span><span>Disk</span><span>Temp</span></div>'
+      +'</div>';
+  });
+  document.getElementById('health-bars').innerHTML=healthHTML;
+
+  // Auto-generated incidents from live data
+  let incidents=[];
+  down.forEach(name=>{
+    incidents.push({title:name.charAt(0).toUpperCase()+name.slice(1)+' is down',body:ROLES[name]+' node is not responding. May require physical reboot.',tag:'investigating'});
+  });
+  throttled.forEach(name=>{
+    const n=nodes[name];
+    incidents.push({title:name.charAt(0).toUpperCase()+name.slice(1)+' undervoltage throttling',body:'Throttle flag: '+(n.throttle||'unknown')+'. Voltage: '+(n.voltage||'—')+'V. PSU may be insufficient.',tag:'investigating'});
+  });
+  NODES.forEach(name=>{
+    const n=nodes[name];
+    if(n&&n.status==='online'&&n.temp&&n.temp>65){
+      incidents.push({title:name.charAt(0).toUpperCase()+name.slice(1)+' high temperature',body:'Current temp: '+n.temp+'°C. Threshold: 65°C. Check cooling and workload.',tag:'investigating'});
+    }
+  });
+  NODES.forEach(name=>{
+    const n=nodes[name];
+    if(n&&n.status==='online'&&n.disk_pct&&n.disk_pct>80){
+      incidents.push({title:name.charAt(0).toUpperCase()+name.slice(1)+' disk usage high',body:'Disk usage at '+n.disk_pct+'%. Free: '+(n.disk_free||'unknown')+'.',tag:'investigating'});
+    }
+  });
+
+  const incEl=document.getElementById('incidents-list');
+  if(incidents.length===0){
+    incEl.innerHTML='<div class="no-incidents">No active issues</div>';
+  } else {
+    incEl.innerHTML=incidents.map(i=>
+      '<div class="incident">'
+      +'<div class="incident-header"><span class="incident-title">'+i.title+'</span><span class="incident-date">Live</span></div>'
+      +'<div class="incident-body">'+i.body+'</div>'
+      +'<span class="incident-tag '+i.tag+'">'+i.tag.charAt(0).toUpperCase()+i.tag.slice(1)+'</span>'
+      +'</div>'
+    ).join('');
+  }
 }
-// Keyboard shortcuts
-document.addEventListener('keydown',function(e){
-  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
-  switch(e.key){
-    case'?':toggleHelp();break;
-    case'/':e.preventDefault();var ps=document.getElementById('ps');ps.classList.toggle('open');if(ps.classList.contains('open'))document.getElementById('psi').focus();break;
-    case'e':document.querySelectorAll('.card').forEach(function(c){c.classList.add('open')});break;
-    case'c':document.querySelectorAll('.card').forEach(function(c){c.classList.remove('open')});break;
-    case't':scrollTo({top:0,behavior:'smooth'});break;
-    case's':navigator.clipboard?.writeText(location.href);break;
-    case'Escape':document.getElementById('ps').classList.remove('open');document.getElementById('kh').classList.remove('open');document.getElementById('ko').classList.remove('open');if(origHTML){pageSearch('');document.getElementById('psi').value='';}break;
-  }
-});
-function toggleHelp(){document.getElementById('kh').classList.toggle('open');document.getElementById('ko').classList.toggle('open');}
-// Breadcrumb trail (last 5 visited pages)
-(function(){var key='br-trail';var trail=JSON.parse(localStorage.getItem(key)||'[]');var cur={url:location.href,title:document.title,time:Date.now()};trail=trail.filter(function(t){return t.url!==cur.url;});trail.unshift(cur);trail=trail.slice(0,5);localStorage.setItem(key,JSON.stringify(trail));})();
+
+function load(){
+  fetch(API).then(r=>r.json()).then(render).catch(e=>{
+    document.getElementById('banner-text').textContent='Connection failed';
+    document.getElementById('banner-dot').className='status-indicator down';
+    document.getElementById('banner-updated').textContent='API unreachable';
+  });
+}
+load();
+setInterval(load, 60000);
 </script>
-
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:999;background:rgba(10,10,10,.94);backdrop-filter:blur(12px);border-top:1px solid #1a1a1a;padding:10px 0;overflow-x:auto">
+<div style="display:flex;gap:16px;justify-content:center;align-items:center;padding:0 20px;white-space:nowrap">
+<a href="https://blackroad.io" style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:#777;text-decoration:none;transition:color .2s">BlackRoad OS</a>
+<a href="https://blackroad.company" style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:#777;text-decoration:none;transition:color .2s">Company</a>
+<a href="https://blackroadai.com" style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:#777;text-decoration:none;transition:color .2s">AI</a>
+<a href="https://roadchain.io" style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:#777;text-decoration:none;transition:color .2s">RoadChain</a>
+<a href="https://roadcoin.io" style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:#777;text-decoration:none;transition:color .2s">RoadCoin</a>
+<a href="https://lucidia.earth" style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:#777;text-decoration:none;transition:color .2s">Lucidia</a>
+<a href="https://blackroad.systems" style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:#777;text-decoration:none;transition:color .2s">Systems</a>
+<a href="https://github.com/BlackRoad-OS-Inc" style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:#777;text-decoration:none;transition:color .2s">GitHub</a>
+</div>
+</div>
+<div style="height:42px"></div>
 <script>
-// BlackRoad Live Counts — fetches real numbers from GitHub API
+// BlackRoad Live Stats
 (function(){
-  var ORGS=["BlackRoad-OS-Inc","BlackRoad-AI","BlackRoad-Agents","BlackRoad-Archive","BlackRoad-Cloud","BlackRoad-Education","BlackRoad-Forge","BlackRoad-Foundation","BlackRoad-Gov","BlackRoad-Hardware","BlackRoad-Interactive","BlackRoad-Labs","BlackRoad-Media","BlackRoad-Network","BlackRoad-OS","BlackRoad-QI","BlackRoad-Quantum","BlackRoad-README","BlackRoad-Sandbox","BlackRoad-Security","BlackRoad-Studio","BlackRoad-Ventures","Blackbox-Enterprises"];
-  var cache=JSON.parse(sessionStorage.getItem('br-live')||'{}');
-  var stale=!cache.ts||Date.now()-cache.ts>300000; // 5min cache
-  
-  async function fetchLive(){
-    if(!stale&&cache.repos){update(cache);return;}
-    var totalRepos=0,totalStars=0,langs=new Set();
-    // Sample 5 orgs for speed, extrapolate
-    var sample=ORGS.slice(0,5);
-    for(var o of sample){
-      try{
-        var r=await fetch('https://api.github.com/orgs/'+o);
-        if(r.ok){var d=await r.json();totalRepos+=d.public_repos||0;}
-      }catch(e){}
-    }
-    var est=Math.round(totalRepos*(ORGS.length/sample.length));
-    cache={repos:est,orgs:ORGS.length,domains:19,nodes:7,tops:52,agents:109,pages:193,models:16,forks:13,ts:Date.now()};
-    sessionStorage.setItem('br-live',JSON.stringify(cache));
-    update(cache);
+  const API='https://stats-blackroad.amundsonalexa.workers.dev';
+  async function load(){
+    try{
+      const r=await fetch(API+'/ecosystem');
+      const d=(await r.json())?.data||{};
+      document.querySelectorAll('[data-stat]').forEach(el=>{
+        const v=d[el.dataset.stat];
+        if(v!==undefined)el.textContent=typeof v==='number'?v.toLocaleString():v;
+      });
+    }catch(e){}
   }
-  
-  function update(d){
-    // Update any element with matching stat text
-    document.querySelectorAll('.sv,.stat-val,.stat-value,[data-live]').forEach(function(el){
-      var label=(el.nextElementSibling||el.parentElement.querySelector('.sl,.stat-label')||{}).textContent||'';
-      label=label.toLowerCase();
-      var attr=el.getAttribute('data-live');
-      
-      if(attr==='repos'||label.includes('repo'))el.textContent=d.repos?d.repos.toLocaleString()+'+':(el.textContent);
-      else if(attr==='orgs'||label==='orgs'||label==='github orgs')el.textContent=d.orgs||el.textContent;
-      else if(attr==='domains'||label==='domains')el.textContent=d.domains||el.textContent;
-      else if(attr==='nodes'||label==='nodes')el.textContent=d.nodes||el.textContent;
-      else if(attr==='tops'||label.includes('tops'))el.textContent=d.tops||el.textContent;
-      else if(attr==='agents'||label==='agents')el.textContent=d.agents||el.textContent;
-      else if(attr==='pages'||label==='pages')el.textContent=d.pages+'+'||el.textContent;
-      else if(attr==='models'||label.includes('model'))el.textContent=d.models+'+'||el.textContent;
-    });
-    
-    // Also update specific IDs
-    var idMap={'s-repos':'repos','s-orgs':'orgs','s-domains':'domains','s-nodes':'nodes','repo-count':'repos','rc':'repos'};
-    for(var id in idMap){
-      var el=document.getElementById(id);
-      if(el&&d[idMap[id]])el.textContent=d[idMap[id]].toLocaleString()+(['repos'].includes(idMap[id])?'+':'');
-    }
-  }
-  
-  // Run on load
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fetchLive);
-  else fetchLive();
-  // Refresh every 5 min
-  setInterval(fetchLive,300000);
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',load);
+  else load();
+  setInterval(load,60000);
 })();
-</script>
-
-<script>
-// Breadcrumb trail UI
-(function(){
-  var trail=JSON.parse(localStorage.getItem('br-trail')||'[]');
-  if(trail.length<2)return;
-  var recent=trail.slice(1,4); // skip current page
-  var html='<div style="margin-bottom:24px"><div style="font-family:var(--jb,monospace);font-size:9px;color:#555;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Recently Visited</div>';
-  recent.forEach(function(p){
-    var name=p.title.replace(' — BlackRoad','').replace('BlackRoad ','').substring(0,30);
-    html+='<a href="'+p.url+'" style="display:inline-block;font-size:10px;color:#888;background:#0a0a0a;border:1px solid #1a1a1a;border-radius:6px;padding:3px 10px;margin:2px 4px 2px 0;text-decoration:none;transition:border-color .2s">'+name+'</a>';
-  });
-  html+='</div>';
-  var target=document.querySelector('.section:last-of-type')||document.querySelector('.ct,.container');
-  if(target)target.insertAdjacentHTML('beforeend',html);
-})();
-
-// Visit counter per page
-(function(){
-  var key='br-visits-'+location.pathname;
-  var v=parseInt(localStorage.getItem(key)||'0')+1;
-  localStorage.setItem(key,v);
-  var el=document.querySelector('.read-time');
-  if(el)el.textContent=el.textContent+' · visit #'+v;
-})();
-
-// Related pages based on keyword matching
-(function(){
-  var registry={"alice": "alice.blackroad.io", "cecilia": "cecilia.blackroad.io", "octavia": "octavia.blackroad.io", "aria": "aria.blackroad.io", "lucidia": "lucidia.blackroad.io", "gematria": "gematria.blackroad.io", "anastasia": "anastasia.blackroad.io", "roundtrip": "roundtrip.blackroad.io", "prism": "prism.blackroad.io", "openclaw": "openclaw.blackroad.io", "roadcoin": "roadcoin.io", "roadchain": "roadchain.io", "roadwork": "roadwork.blackroad.io", "gitea": "roadcode.blackroad.io", "roadcode": "roadcode.blackroad.io", "wireguard": "tollbooth.blackroad.io", "tollbooth": "tollbooth.blackroad.io", "ollama": "ollama-fleet.blackroad.io", "minio": "curb.blackroad.io", "curb": "curb.blackroad.io", "caddy": "oneway.blackroad.io", "oneway": "oneway.blackroad.io", "qdrant": "rearview.blackroad.io", "rearview": "rearview.blackroad.io", "nats": "carpool.blackroad.io", "carpool": "carpool.blackroad.io", "headscale": "roundabout.blackroad.io", "grafana": "roadmap.blackroad.io", "amundson": "amundson.blackroad.io", "simulation theory": "simulation.blackroad.io", "blackbox protocol": "blackbox.blackroad.io", "three pillars": "pillars.blackroad.io", "llama3": "llama3.blackroad.io", "mistral": "mistral.blackroad.io", "codellama": "codellama.blackroad.io", "phi": "phi.blackroad.io", "gemma": "gemma.blackroad.io", "deepseek": "deepseek.blackroad.io", "nomic-embed": "nomic-embed.blackroad.io", "road agent": "road.blackroad.io", "cece": "cece.blackroad.io", "echo agent": "echo.blackroad.io", "oracle": "oracle.blackroad.io", "atlas": "atlas.blackroad.io", "cipher": "cipher.blackroad.io", "sentinel": "sentinel.blackroad.io", "hermes": "hermes.blackroad.io", "scribe": "scribe.blackroad.io", "search": "search.blackroad.io", "verify": "verify.blackroad.io", "map": "map.blackroad.io", "glossary": "glossary.blackroad.io", "faq": "faq.blackroad.io", "changelog": "changelog.blackroad.io"};
-  var title=document.title.toLowerCase();
-  var text=(document.querySelector('.ct,.container')?.textContent||'').toLowerCase();
-  var related=[];
-  var current=location.hostname;
-  for(var key in registry){
-    if(registry[key].includes(current))continue; // skip self
-    if(title.includes(key)||text.includes(key)){
-      related.push({name:key,url:'https://'+registry[key]});
-    }
-  }
-  if(!related.length)return;
-  // Deduplicate by URL
-  var seen={};
-  related=related.filter(function(r){if(seen[r.url])return false;seen[r.url]=true;return true;}).slice(0,8);
-  
-  var html='<div style="margin-top:32px;margin-bottom:24px"><div style="font-family:var(--jb,monospace);font-size:9px;color:#555;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">Related Pages</div><div style="display:flex;flex-wrap:wrap;gap:6px">';
-  related.forEach(function(r){
-    html+='<a href="'+r.url+'" style="font-size:11px;color:#aaa;background:#0a0a0a;border:1px solid #1a1a1a;border-radius:8px;padding:6px 12px;text-decoration:none;transition:border-color .2s" onmouseover="this.style.borderColor='#333'" onmouseout="this.style.borderColor='#1a1a1a'">'+r.name+'</a>';
-  });
-  html+='</div></div>';
-  var last=document.querySelector('.section:last-of-type');
-  if(last)last.insertAdjacentHTML('beforebegin',html);
-})();
-</script>
-
-<script>
-// Auto-generate table of contents from section labels
-(function(){
-  var labels=document.querySelectorAll('.lb,.section-label');
-  if(labels.length<3)return;
-  var toc='<div style="margin-bottom:24px"><div style="font-family:var(--jb,monospace);font-size:9px;color:#555;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">On This Page</div>';
-  labels.forEach(function(l,i){
-    var id='s'+i;
-    l.id=id;
-    l.style.scrollMarginTop='60px';
-    toc+='<a href="#'+id+'" style="display:block;font-size:11px;color:#777;text-decoration:none;padding:3px 0;transition:color .15s" onmouseover="this.style.color='#ddd'" onmouseout="this.style.color='#777'">'+l.textContent+'</a>';
-  });
-  toc+='</div>';
-  var first=document.querySelector('.section:nth-child(2)');
-  if(first)first.insertAdjacentHTML('beforebegin',toc);
-})();
-
-// Time-based greeting
-(function(){
-  var h=new Date().getHours();
-  var greet=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
-  var el=document.querySelector('.st,.subtitle,.company-sub');
-  if(el&&!el.dataset.greeted){
-    el.dataset.greeted='1';
-    var span=document.createElement('span');
-    span.style.cssText='font-family:var(--jb,monospace);font-size:9px;color:#444;margin-left:8px';
-    span.textContent='· '+greet;
-    el.appendChild(span);
-  }
-})();
-
-// Page load time
-(function(){
-  var t=performance.now();
-  var el=document.querySelector('.read-time');
-  if(el)el.textContent=el.textContent+' · '+Math.round(t)+'ms load';
-})();
-
-// Scroll spy — highlight current section in TOC
-(function(){
-  var toc=document.querySelectorAll('[href^="#s"]');
-  if(!toc.length)return;
-  var labels=document.querySelectorAll('.lb[id],.section-label[id]');
-  window.addEventListener('scroll',function(){
-    var current='';
-    labels.forEach(function(l){if(l.getBoundingClientRect().top<100)current=l.id;});
-    toc.forEach(function(a){a.style.color=a.getAttribute('href')==='#'+current?'#ddd':'#777';});
-  });
-})();
-
-// Network status indicator
-(function(){
-  var el=document.querySelector('.header-sub,#status,#st');
-  if(!el)return;
-  window.addEventListener('online',function(){el.style.color='#4a4';});
-  window.addEventListener('offline',function(){el.textContent='offline';el.style.color='#a44';});
-})();
-
-// Lazy image loading (future-proof for when we add images)
-document.querySelectorAll('img').forEach(function(img){img.loading='lazy';});
-
-// Print page title in console
-console.log('%cBlackRoad OS','color:#FF2255;font-size:16px;font-weight:bold');
-console.log('%cRemember the Road. Pave Tomorrow.','color:#888;font-size:11px');
-console.log('%c'+document.title,'color:#aaa;font-size:10px');
 </script>
 </body>
 </html>
-<!-- v1774241318 -->
